@@ -64,7 +64,7 @@ const images = [
     },
 ];
 
-const createGalleryTemplate = image => {
+const createImageHtmlTemplate = image => {
     return `
     <li class="gallery-card js-gallery-card">
       <a class="gallery-link" href="${image.original}">
@@ -79,29 +79,27 @@ const createGalleryTemplate = image => {
   `;
 };
 
-const imgGalleryTemplate = images.map(image => createGalleryTemplate(image)).join('');
+const galleryHtmlTemplate = images.map(image => createImageHtmlTemplate(image)).join('');
 
 const galleryList = document.querySelector('.gallery');
 
-galleryList.innerHTML = imgGalleryTemplate;
+galleryList.innerHTML = galleryHtmlTemplate;
 
-const ongalleryListdClick = event => {
-    event.preventDefault();
-    if (event.target === event.currentTarget) {
+const onGalleryClick = event => {
+    if (event.target.nodeName !== 'IMG') {
         return;
-
     }
-    const galleryEl = event.target.closest('.js-gallery-card');
-    const img = galleryEl.querySelector('img');
-    const source = img.dataset.source;
+    event.preventDefault();
+    const galleryItem = event.target.closest('.js-gallery-card');
+    const galleryItemImage = galleryItem.querySelector('img');
 
-    const galleryModalInstance = basicLightbox.create(`
-    <img src="${source}" alt="${img.alt}" class="gallery-card-img-modal"/>
+    const galleryModal = basicLightbox.create(`
+    <img src="${galleryItemImage.dataset.source}" alt="${galleryItemImage.alt}" class="gallery-card-img-modal"/>
      <div class="modal-text-content">
-      <h2 class="modal-title">${img.alt}</h2>
+      <h2 class="modal-title">${galleryItemImage.alt}</h2>
     </div>
   `);
-    galleryModalInstance.show();
+    galleryModal.show();
 }
 
-galleryList.addEventListener('click', ongalleryListdClick);
+galleryList.addEventListener('click', onGalleryClick);
